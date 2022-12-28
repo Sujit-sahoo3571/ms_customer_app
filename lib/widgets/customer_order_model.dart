@@ -18,7 +18,7 @@ class CustomerOrderModel extends StatefulWidget {
 }
 
 class _CustomerOrderModelState extends State<CustomerOrderModel> {
-  late double rate;
+  double rate = 5.0;
   String comment = "";
   @override
   Widget build(BuildContext context) {
@@ -175,7 +175,7 @@ class _CustomerOrderModelState extends State<CustomerOrderModel> {
                                         children: [
                                           //rating bar
                                           RatingBar.builder(
-                                              initialRating: 1,
+                                              initialRating: 5,
                                               minRating: 1,
                                               allowHalfRating: true,
                                               itemBuilder: (context, index) {
@@ -192,7 +192,8 @@ class _CustomerOrderModelState extends State<CustomerOrderModel> {
                                           TextFormField(
                                             initialValue: "Good",
                                             decoration: InputDecoration(
-                                                hintText: "Enter your review",
+                                                hintText:
+                                                    "Write some review here ",
                                                 border: OutlineInputBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(
@@ -240,8 +241,6 @@ class _CustomerOrderModelState extends State<CustomerOrderModel> {
                                                 MaterialYellowButton(
                                                     label: "OK",
                                                     onpressed: () async {
-                                                      print("y");
-
                                                       CollectionReference
                                                           collref =
                                                           FirebaseFirestore
@@ -252,7 +251,10 @@ class _CustomerOrderModelState extends State<CustomerOrderModel> {
                                                                   "prodid"])
                                                               .collection(
                                                                   "reviews");
-                                                      print("x");
+
+                                                      comment == ""
+                                                          ? comment = "Good"
+                                                          : comment;
 
                                                       await collref
                                                           .doc(FirebaseAuth
@@ -283,7 +285,7 @@ class _CustomerOrderModelState extends State<CustomerOrderModel> {
                                                                   .doc(widget
                                                                           .order[
                                                                       "orderid"]);
-
+                                                                      
                                                           transaction.update(
                                                               documentReference,
                                                               {

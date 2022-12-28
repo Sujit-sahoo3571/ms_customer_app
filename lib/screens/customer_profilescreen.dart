@@ -9,6 +9,7 @@ import 'package:ms_customer_app/screens/customer_cart_screen.dart';
 import 'package:ms_customer_app/screens/welcome_screen.dart';
 import 'package:ms_customer_app/widgets/alertdialog.dart';
 import 'package:ms_customer_app/widgets/listtile_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // import 'add_address.dart';
 
@@ -30,6 +31,9 @@ class CustomerProfileScreen extends StatefulWidget {
 
 class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
   String documentId = FirebaseAuth.instance.currentUser!.uid;
+
+  
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   CollectionReference customers =
       FirebaseFirestore.instance.collection('customers');
@@ -272,6 +276,8 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                               ),
                               TextButton(
                                 onPressed: () async {
+                                   final SharedPreferences prefs = await _prefs;
+                        prefs.setString("customerId", "");
                                   await FirebaseAuth.instance
                                       .signOut()
                                       .whenComplete(

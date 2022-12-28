@@ -13,6 +13,7 @@ import 'package:ms_customer_app/screens/welcome_screen.dart';
 import 'package:ms_customer_app/widgets/alertdialog.dart';
 import 'package:ms_customer_app/widgets/button_animlogo.dart';
 import 'package:ms_customer_app/widgets/signup_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomerLogInScreen extends StatefulWidget {
   const CustomerLogInScreen({super.key});
@@ -62,6 +63,10 @@ class _CustomerLogInScreenState extends State<CustomerLogInScreen> {
       print(googleUser!.id);
       print(googleUser);
       print(user);
+      final SharedPreferences prefs = await _prefs;
+
+      prefs.setString("customerId", user.uid);
+      print(user.uid);
 
       // check doc exist
       docExists = await docIfExists(user.uid);
@@ -87,6 +92,7 @@ class _CustomerLogInScreenState extends State<CustomerLogInScreen> {
   late String email;
   late String password;
   bool isprocessing = false;
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
   Widget build(BuildContext context) {
@@ -228,6 +234,11 @@ class _CustomerLogInScreenState extends State<CustomerLogInScreen> {
       try {
         await AuthRepo.signInWithEmailAndPassword(email, password);
         await AuthRepo.reload();
+        User user = FirebaseAuth.instance.currentUser!;
+        final SharedPreferences prefs = await _prefs;
+
+        prefs.setString("customerId", user.uid);
+        print(user.uid);
 
         if (FirebaseAuth.instance.currentUser!.emailVerified) {
           _formKey.currentState!.reset();

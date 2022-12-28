@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:ms_customer_app/loginscreen/customer_login.dart';
 import 'package:ms_customer_app/loginscreen/customer_signup_page.dart';
 import 'package:ms_customer_app/widgets/button_animlogo.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'onboarding_screen.dart';
 
 const kcolorizedColors = [
   Colors.purple,
@@ -24,6 +27,9 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   bool isLoading = false;
+  String customerId = "";
+
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
   void initState() {
@@ -31,6 +37,15 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     _controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 2));
     _controller.repeat();
+
+    _prefs.then((SharedPreferences prefs) {
+      return prefs.getString("customerId") ?? "";
+    }).then((String value) {
+      setState(() {
+        customerId = value;
+      });
+      print(customerId);
+    });
   }
 
   @override
@@ -118,8 +133,11 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                           label: 'LogIn',
                           width: 0.25,
                           onpressed: () {
-                            Navigator.pushReplacementNamed(
-                                context, CustomerLogInScreen.signInRoutName);
+                            customerId != ""
+                                ? Navigator.pushReplacementNamed(
+                                    context, OnBoardingScreen.onboarding)
+                                : Navigator.pushReplacementNamed(context,
+                                    CustomerLogInScreen.signInRoutName);
                           },
                         ),
                         AnimatedLogo(controller: _controller),
