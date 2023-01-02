@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ms_customer_app/loginscreen/customer_login.dart';
 import 'package:ms_customer_app/loginscreen/customer_signup_page.dart';
 import 'package:ms_customer_app/provider/cart_provider.dart';
+import 'package:ms_customer_app/provider/sqllitehelper.dart';
 import 'package:ms_customer_app/provider/wishlist_product.dart';
 import 'package:ms_customer_app/screens/customer_main_screen.dart';
 import 'package:ms_customer_app/screens/onboarding_screen.dart';
@@ -12,6 +13,7 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  SQLHelper.getDatabase;
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => Cart()),
     ChangeNotifierProvider(create: (_) => Wish()),

@@ -1,50 +1,40 @@
 import 'package:flutter/foundation.dart';
+import 'package:ms_customer_app/provider/sqllitehelper.dart';
 import 'product_class.dart';
 
 class Cart extends ChangeNotifier {
-  final List<Product> _list = [];
+  static List<Product> _list = [];
   List<Product> get getItems => _list;
   int? get count => _list.length;
 
-  void addItems(
-    String name,
-    double price,
-    int qty,
-    int qntty,
-    List imageUrl,
-    String documentid,
-    String suppid,
-  ) {
-    final product = Product(
-        name: name,
-        price: price,
-        qntty: qntty,
-        qty: qty,
-        imageUrl: imageUrl,
-        documentid: documentid,
-        suppid: suppid);
+  void addItems(Product product) async {
+    await SQLHelper.insertItem(product).whenComplete(() => _list.add(product));
 
-    _list.add(product);
     notifyListeners();
   }
 
-  void increment(Product product) {
-    product.increase();
+  void increment(Product product) async {
+    await SQLHelper.updateItemqty(product, 1)
+        .whenComplete(() => product.increase());
     notifyListeners();
   }
 
-  void reduceByOne(Product product) {
-    product.decrease();
+  void reduceByOne(Product product) async {
+    await SQLHelper.updateItemqty(product, -1)
+        .whenComplete(() => product.decrease());
     notifyListeners();
   }
 
-  void removeItem(Product product) {
-    _list.remove(product);
+  void removeItem(Product product) async {
+    await SQLHelper.deleteItem(product.documentid)
+        .whenComplete(() => _list.remove(product));
+
     notifyListeners();
   }
 
-  void clearCart() {
-    _list.clear();
+  void clearCart() async {
+    await SQLHelper.deleteAllItem().whenComplete(() => _list.clear());
+
     notifyListeners();
   }
 
@@ -54,5 +44,23 @@ class Cart extends ChangeNotifier {
       total += item.price * item.qty;
     }
     return total;
+  }
+
+  // load items
+  loadItemsProvider() async {
+    List<Map> data = await SQLHelper.loadCartItems();
+    _list = data.map((product) {
+      return Product(
+        documentid: product["documentid"],
+        name: product["name"],
+        price: product["price"],
+        qntty: product["qntty"],
+        qty: product["qty"],
+        imageUrl: product["imageUrl"],
+        suppid: product["suppid"],
+      );
+    }).toList();
+
+    notifyListeners();
   }
 }

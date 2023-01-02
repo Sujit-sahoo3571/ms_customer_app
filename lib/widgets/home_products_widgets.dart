@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ms_customer_app/detailscreen/product_detailscren.dart';
 import 'package:ms_customer_app/minor_screen/edit_product.dart';
+import 'package:ms_customer_app/provider/product_class.dart';
 import 'package:ms_customer_app/provider/wishlist_product.dart';
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
@@ -122,18 +123,17 @@ class _ProductsModelHomeWState extends State<ProductsModelHomeW> {
                                           ? context.read<Wish>().removeThis(
                                               widget.products['prodId'])
                                           : context.read<Wish>().addWishItems(
-                                                widget.products['productname'],
-
-                                                // widget.products['price'],
-                                                salePrice,
-
-                                                1,
-                                                widget.products['instock'],
-                                                widget
-                                                    .products['productimages'],
-                                                widget.products['prodId'],
-                                                widget.products['sid'],
-                                              );
+                                            Product(
+                                              documentid:
+                                                  widget.products['prodId'],
+                                              name: widget
+                                                  .products['productname'],
+                                              price: widget.products['price'],
+                                              qntty: widget.products['instock'],
+                                              qty: 1,
+                                              imageUrl: widget
+                                                  .products['productimages'][0],
+                                              suppid: widget.products['sid']));
                                     },
                                     icon: context
                                                 .watch<Wish>()

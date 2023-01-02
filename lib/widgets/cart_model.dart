@@ -49,8 +49,6 @@ class CardListModel extends StatelessWidget {
                     product.qty == 1
                         ? IconButton(
                             onPressed: () {
-                              // cart.removeItem(product);
-
                               showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
@@ -79,7 +77,7 @@ class CardListModel extends StatelessWidget {
                           )
                         : IconButton(
                             onPressed: () {
-                              cart.reduceByOne(product);
+                              cart.reduceByOne(product); // update 
                             },
                             icon: const Icon(
                               FontAwesomeIcons.minus,

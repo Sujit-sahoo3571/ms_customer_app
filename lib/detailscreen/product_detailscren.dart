@@ -16,6 +16,8 @@ import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
 import 'package:collection/collection.dart';
 
+import '../provider/product_class.dart';
+
 class ProductDetailScreen extends StatefulWidget {
   final dynamic prodlist;
   const ProductDetailScreen({super.key, required this.prodlist});
@@ -145,8 +147,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                     IconButton(
                       onPressed: () {
-                        //TODO
-
+                        
                         context.read<Wish>().getwishItems.firstWhereOrNull(
                                     (prod) =>
                                         prod.documentid ==
@@ -155,16 +156,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             ? context
                                 .read<Wish>()
                                 .removeThis(widget.prodlist['prodId'])
-                            : context.read<Wish>().addWishItems(
-                                  widget.prodlist['productname'],
-                                  // widget.prodlist['price'],
-                                  salePrice,
-                                  1,
-                                  widget.prodlist['instock'],
-                                  widget.prodlist['productimages'],
-                                  widget.prodlist['prodId'],
-                                  widget.prodlist['sid'],
-                                );
+                            : context.read<Wish>().addWishItems(Product(
+                                documentid: widget.prodlist['prodId'],
+                                name: widget.prodlist['productname'],
+                                price: widget.prodlist['price'],
+                                qntty: widget.prodlist['instock'],
+                                qty: 1,
+                                imageUrl: widget.prodlist['productimages'][0],
+                                suppid: widget.prodlist['sid']));
+
                       },
                       icon: context.watch<Wish>().getwishItems.firstWhereOrNull(
                                   (prod) =>
@@ -312,16 +312,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ));
                       } else {
                         context.read<Cart>().addItems(
-                              widget.prodlist['productname'],
-                              //
-                              // onSale != 0 ? salePrice :
-                              // widget.prodlist['price'],
-                              salePrice,
-                              1,
-                              widget.prodlist['instock'],
-                              widget.prodlist['productimages'],
-                              widget.prodlist['prodId'],
-                              widget.prodlist['sid'],
+                              Product(
+                                documentid: widget.prodlist['prodId'],
+                                name: widget.prodlist['productname'],
+                                price: onSale != 0
+                                    ? salePrice
+                                    : widget.prodlist['price'],
+                                qntty: widget.prodlist['instock'],
+                                qty: 1,
+                                imageUrl: productimage.first,
+                                suppid: widget.prodlist['sid'],
+                              ),
                             );
                       }
                     }),

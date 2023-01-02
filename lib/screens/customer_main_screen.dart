@@ -1,6 +1,7 @@
-import 'package:badges/badges.dart'as badges;
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:ms_customer_app/provider/cart_provider.dart';
+import 'package:ms_customer_app/provider/wishlist_product.dart';
 import 'package:ms_customer_app/screens/category_screen.dart';
 import 'package:ms_customer_app/screens/customer_cart_screen.dart';
 import 'package:ms_customer_app/screens/customer_profilescreen.dart';
@@ -30,6 +31,15 @@ class _CustomerBottomNavigationState extends State<CustomerBottomNavigation> {
         // documentId: FirebaseAuth.instance.currentUser!.uid,
         ),
   ];
+
+  @override
+  void initState() {
+    context.read<Cart>().loadItemsProvider();
+    context.read<Wish>().loadWishlist();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

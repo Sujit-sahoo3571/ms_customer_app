@@ -23,47 +23,26 @@ class _CustomerWishListScreenState extends State<CustomerWishListScreen> {
           appBar: AppBar(
             leading: const AppBarBackButton(),
             elevation: 0.0,
-            // actions: [
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: context.watch<Cart>().getItems.isEmpty
-            //       ? const SizedBox()
-            //       : IconButton(
-            //           onPressed: () {
-            //             showDialog(
-            //                 context: context,
-            //                 builder: (context) {
-            //                   return AlertDialog(
-            //                     title: const Text("Empty Cart"),
-            //                     content: const Text("Are you sure?"),
-            //                     actions: [
-            //                       TextButton(
-            //                           onPressed: () =>
-            //                               Navigator.of(context).pop(),
-            //                           child: const Text("No")),
-            //                       TextButton(
-            //                           onPressed: () {
-            //                             context.read<Cart>().clearCart();
-            //                             Navigator.of(context).pop();
-            //                           },
-            //                           child: const Text("Yes")),
-            //                     ],
-            //                   );
-            //                 });
-            //             // context.read<Cart>().clearCart();
-            //           },
-            //           icon: const Icon(
-            //             Icons.delete_forever,
-            //             color: Colors.black,
-            //           ),
-            //         ),
-            // )
-            // ],
+           
             title: const AppbarTitle(
               subCategoryName: 'WishList',
             ),
             centerTitle: true,
             backgroundColor: Colors.white,
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    context.read<Wish>().clearWishList();
+                  },
+                  icon: const Icon(
+                    Icons.delete,
+                    color: Colors.blueGrey,
+                    size: 30.0,
+                  )),
+              const SizedBox(
+                width: 10.0,
+              )
+            ],
           ),
           body: context.watch<Wish>().getwishItems.isNotEmpty
               ? const WishItemsW()

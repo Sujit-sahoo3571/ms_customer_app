@@ -44,7 +44,9 @@ class _CustomerCartScreenState extends State<CustomerCartScreen> {
                                         child: const Text("No")),
                                     TextButton(
                                         onPressed: () {
-                                          context.read<Cart>().clearCart();
+                                          context
+                                              .read<Cart>()
+                                              .clearCart(); // deleteall
                                           Navigator.of(context).pop();
                                         },
                                         child: const Text("Yes")),
@@ -188,7 +190,7 @@ class CartItemW extends StatelessWidget {
                       SizedBox(
                         height: 100.0,
                         width: 120.0,
-                        child: Image.network(product.imageUrl.first),
+                        child: Image.network(product.imageUrl),
                       ),
                       Flexible(
                         child: CardListModel(

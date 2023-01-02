@@ -174,7 +174,7 @@ class CartItemW extends StatelessWidget {
                       SizedBox(
                         height: 100.0,
                         width: 120.0,
-                        child: Image.network(product.imageUrl.first),
+                        child: Image.network(product.imageUrl),
                       ),
                       Flexible(
                         child: Padding(

@@ -187,7 +187,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                                               height: 100.0,
                                               width: 100.0,
                                               child: Image.network(
-                                                  order.imageUrl.first),
+                                                  order.imageUrl),
                                             ),
                                           ),
                                           Flexible(
