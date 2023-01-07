@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -244,7 +246,7 @@ class _EditProductState extends State<EditProduct> {
                         child: TextFormField(
                           initialValue: widget.items["discount"].toString(),
                           autocorrect: false,
-                          //TODO Error
+                        
                           maxLength: 2,
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -567,7 +569,7 @@ class _EditProductState extends State<EditProduct> {
                       menuMaxHeight: 400.0,
                       iconEnabledColor: Colors.red,
                       value: subcategoryvalue,
-                      items: subcatList //TODO
+                      items: subcatList 
                           .map((e) => DropdownMenuItem(
                                 value: e,
                                 child: Text(e),

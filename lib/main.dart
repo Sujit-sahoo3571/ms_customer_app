@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:ms_customer_app/loginscreen/customer_login.dart';
 import 'package:ms_customer_app/loginscreen/customer_signup_page.dart';
@@ -9,10 +11,29 @@ import 'package:ms_customer_app/screens/onboarding_screen.dart';
 import 'package:ms_customer_app/screens/welcome_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:ms_customer_app/services/notification_services.dart';
+
+
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+
+  print("Handling a background message: ${message.messageId}");
+  print("Handling a background message: ${message.notification!.title}"); 
+  print("Handling a background message: ${message.notification!.body}");
+  print("Handling a background message: ${message.data}");
+  print("Handling a background message: ${message.data["key1"]}");
+}
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  NotificationsServices.createNotificationChannelAndInitialize();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   SQLHelper.getDatabase;
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => Cart()),

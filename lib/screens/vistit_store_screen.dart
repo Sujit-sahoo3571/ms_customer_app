@@ -1,8 +1,10 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:ms_customer_app/screens/edit_store.dart';
 import 'package:ms_customer_app/widgets/home_products_widgets.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
@@ -18,6 +20,57 @@ class VisitStoreScreen extends StatefulWidget {
 
 class _VisitStoreScreenState extends State<VisitStoreScreen> {
   bool isFollow = false;
+  List<String> subscriptionList = [];
+  final String cid = FirebaseAuth.instance.currentUser!.uid;
+
+  checkUserSubscription() {
+    FirebaseFirestore.instance
+        .collection("suppliers")
+        .doc(widget.sid)
+        .collection("subscription")
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        subscriptionList.add(doc["followid"]); // followid
+      }
+    }).whenComplete(() => isFollow = subscriptionList.contains(cid));
+  }
+
+  @override
+  void initState() {
+    checkUserSubscription();
+    super.initState();
+  }
+
+  subscribeToTopic() {
+    FirebaseMessaging.instance.subscribeToTopic("sujit");
+    FirebaseFirestore.instance
+        .collection("suppliers")
+        .doc(widget.sid)
+        .collection("subscription")
+        .doc(cid)
+        .set({"followid": cid});
+
+    setState(() {
+      isFollow = true;
+    });
+    print("isFollow : $isFollow in true ");
+  }
+
+  unSubscribeToTopic() {
+    FirebaseMessaging.instance.unsubscribeFromTopic("sujit");
+    FirebaseFirestore.instance
+        .collection("suppliers")
+        .doc(widget.sid)
+        .collection("subscription")
+        .doc(cid)
+        .delete();
+    setState(() {
+      isFollow = false;
+    });
+    print("isFollow : $isFollow in false ");
+  }
+
   @override
   Widget build(BuildContext context) {
     CollectionReference suppliers =
@@ -93,34 +146,19 @@ class _VisitStoreScreenState extends State<VisitStoreScreen> {
                       ),
                     ),
                   ),
-                  (data['sid'] == FirebaseAuth.instance.currentUser!.uid)
-                      ?
 
-                      // edit the store
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => EditStore(
-                                          data: data,
-                                        )));
-                          },
-                          child: Row(
-                            children: const [Text("Edit "), Icon(Icons.edit)],
-                          ),
-                        )
-                      :
-                      // follow the store
-                      ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              isFollow = !isFollow;
-                            });
-                          },
-                          child: isFollow
-                              ? const Text("Unfollow")
-                              : const Text("Follow + ")),
+                  // follow the store
+                  ElevatedButton(
+                      onPressed: !isFollow
+                          ? () {
+                              subscribeToTopic();
+                            }
+                          : () {
+                              unSubscribeToTopic();
+                            },
+                      child: isFollow
+                          ? const Text("Unfollow")
+                          : const Text("Follow + ")),
                 ],
               ),
             ),

@@ -71,7 +71,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _animationController.dispose();
 
     super.dispose();

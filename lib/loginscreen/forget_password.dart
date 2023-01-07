@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ms_customer_app/widgets/appbar_widgets.dart';
@@ -17,7 +19,6 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     emailController.dispose();
     super.dispose();
   }

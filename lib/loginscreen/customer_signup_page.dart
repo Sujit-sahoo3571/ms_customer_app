@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io' as io;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -241,7 +243,6 @@ class _CustomerSignUpScreenState extends State<CustomerSignUpScreen> {
           await AuthRepo.signupWithEmailAndPassword(email, password);
           await AuthRepo.emailVerification();
 
-          //TODO
           firebase_storage.Reference ref = firebase_storage
               .FirebaseStorage.instance
               .ref('customerimage/$email.jpg');

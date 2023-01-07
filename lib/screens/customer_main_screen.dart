@@ -1,4 +1,7 @@
+// ignore_for_file: avoid_print
+
 import 'package:badges/badges.dart' as badges;
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:ms_customer_app/provider/cart_provider.dart';
 import 'package:ms_customer_app/provider/wishlist_product.dart';
@@ -7,6 +10,7 @@ import 'package:ms_customer_app/screens/customer_cart_screen.dart';
 import 'package:ms_customer_app/screens/customer_profilescreen.dart';
 import 'package:ms_customer_app/screens/customer_storescreen.dart';
 import 'package:ms_customer_app/screens/customer_home_screen.dart';
+import 'package:ms_customer_app/services/notification_services.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
@@ -32,11 +36,28 @@ class _CustomerBottomNavigationState extends State<CustomerBottomNavigation> {
         ),
   ];
 
+  foregroundMessage() {
+    FirebaseMessaging.instance
+        .getToken()
+        .then((value) => print("value : $value"));
+    FirebaseMessaging.instance.getInitialMessage();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Customer App .... Got a message whilst in the foreground!');
+      print('Customer App ....  Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print(
+            'Customer App ....  Message also contained a notification: ${message.notification}');
+        NotificationsServices.showNotification(message);
+      }
+    });
+  }
+
   @override
   void initState() {
     context.read<Cart>().loadItemsProvider();
     context.read<Wish>().loadWishlist();
-
+    foregroundMessage();
     super.initState();
   }
 

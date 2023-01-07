@@ -255,13 +255,16 @@ class _CustomerOrderModelState extends State<CustomerOrderModel> {
                                                       comment == ""
                                                           ? comment = "Good"
                                                           : comment;
-
+                                                      final cid = FirebaseAuth
+                                                          .instance
+                                                          .currentUser!
+                                                          .uid;
                                                       await collref
-                                                          .doc(FirebaseAuth
-                                                              .instance
-                                                              .currentUser!
-                                                              .uid)
+                                                          .doc(cid)
                                                           .set({
+                                                        "cid": cid,
+                                                        "orderid": widget
+                                                            .order["orderid"],
                                                         "name": widget.order[
                                                             "customername"],
                                                         "email": widget
@@ -285,7 +288,7 @@ class _CustomerOrderModelState extends State<CustomerOrderModel> {
                                                                   .doc(widget
                                                                           .order[
                                                                       "orderid"]);
-                                                                      
+
                                                           transaction.update(
                                                               documentReference,
                                                               {

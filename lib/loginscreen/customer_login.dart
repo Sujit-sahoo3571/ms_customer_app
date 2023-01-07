@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -26,8 +28,11 @@ class CustomerLogInScreen extends StatefulWidget {
 
 class _CustomerLogInScreenState extends State<CustomerLogInScreen> {
   bool docExists = false;
+  // bool isSupplier = false;
   CollectionReference customers =
       FirebaseFirestore.instance.collection('customers');
+  CollectionReference supplier =
+      FirebaseFirestore.instance.collection('suppliers');
 
   // check if user exist
   Future<bool> docIfExists(String uid) async {
@@ -38,6 +43,15 @@ class _CustomerLogInScreenState extends State<CustomerLogInScreen> {
       return false;
     }
   }
+  // // supplier
+  // Future<bool> docIfExistsSupplier(String uid) async {
+  //   try {
+  //     var doc = await supplier.doc(uid).get();
+  //     return doc.exists;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 
 // google signin
   Future<UserCredential> signInWithGoogle() async {
@@ -59,7 +73,7 @@ class _CustomerLogInScreenState extends State<CustomerLogInScreen> {
         .signInWithCredential(credential)
         .whenComplete(() async {
       User user = FirebaseAuth.instance.currentUser!;
-      // _uid = FirebaseAuth.instance.currentUser!.uid;
+
       print(googleUser!.id);
       print(googleUser);
       print(user);
@@ -70,6 +84,7 @@ class _CustomerLogInScreenState extends State<CustomerLogInScreen> {
 
       // check doc exist
       docExists = await docIfExists(user.uid);
+      //  isSupplier = await docIfExistsSupplier(user.uid);
 
       !docExists
           ? await customers.doc(user.uid).set({
@@ -235,8 +250,14 @@ class _CustomerLogInScreenState extends State<CustomerLogInScreen> {
         await AuthRepo.signInWithEmailAndPassword(email, password);
         await AuthRepo.reload();
         User user = FirebaseAuth.instance.currentUser!;
+        var data = await FirebaseFirestore.instance
+            .collection("customers")
+            .doc(user.uid)
+            .get();
+        print("data : $data ");
+        print("role : $data ");
+        print(user);
         final SharedPreferences prefs = await _prefs;
-
         prefs.setString("customerId", user.uid);
         print(user.uid);
 
@@ -249,14 +270,14 @@ class _CustomerLogInScreenState extends State<CustomerLogInScreen> {
           Navigator.pushReplacementNamed(
               context, CustomerBottomNavigation.customerHomeRouteName);
         } else {
-          Future.delayed(
-              const Duration(microseconds: 100),
-              () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text("Check Your Inbox To Verify Email."),
-                    backgroundColor: Colors.green,
-                  )));
+        Future.delayed(
+            const Duration(microseconds: 100),
+            () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("Check Your Inbox To Verify Email."),
+                  backgroundColor: Colors.green,
+                )));
 
-          stopprocessing();
+        stopprocessing();
         }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {

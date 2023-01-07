@@ -32,7 +32,6 @@ class CustomerProfileScreen extends StatefulWidget {
 class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
   String documentId = FirebaseAuth.instance.currentUser!.uid;
 
-  
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   CollectionReference customers =
@@ -52,7 +51,23 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
         }
 
         if (snapshot.hasData && !snapshot.data!.exists) {
-          return const Text("Document does not exist");
+          return Center(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("Document does not exist"),
+              TextButton(
+                  onPressed: () async {
+                    final SharedPreferences prefs = await _prefs;
+                    prefs.setString("customerId", "");
+                    await FirebaseAuth.instance
+                        .signOut()
+                        .whenComplete(() => Navigator.pushReplacementNamed(
+                            context, WelcomeScreen.welcomeRouteName));
+                  },
+                  child:const Text("LogOut"))
+            ],
+          ));
         }
 
         if (snapshot.connectionState == ConnectionState.done) {
@@ -276,8 +291,8 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                               ),
                               TextButton(
                                 onPressed: () async {
-                                   final SharedPreferences prefs = await _prefs;
-                        prefs.setString("customerId", "");
+                                  final SharedPreferences prefs = await _prefs;
+                                  prefs.setString("customerId", "");
                                   await FirebaseAuth.instance
                                       .signOut()
                                       .whenComplete(
